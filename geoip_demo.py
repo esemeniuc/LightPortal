@@ -11,7 +11,8 @@ from pysolar.solar import get_altitude
 
 def get_lux():
     reader = geoip2.database.Reader('GeoLite2-City.mmdb')
-    ips = urllib.request.urlopen('https://checkip.amazonaws.com').read().decode('ascii').split(', ')
+    ips = urllib.request.urlopen('https://checkip.amazonaws.com').read().decode('ascii').split(
+        ', ')  # can return multiple ips
     main_ip = ips[0].strip()
     response = reader.city(main_ip)
     latitude_deg = response.location.latitude
