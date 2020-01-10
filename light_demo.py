@@ -95,10 +95,12 @@ def set_hsv_from_camera(camera, group):
     print("setting color to: ", closest_colour(rgb))
     float_hsv = hsv_from_image(image)
     h, s, v = phue_scaled_hsv(float_hsv)
+    upscaled_v = v + 30
+    print('upscaled_v:', upscaled_v)
     group.hue = h
     group.saturation = s
-    group.brightness = v
+    group.brightness = upscaled_v
 
-for i in range(1000):
+for i in range(9999):
 	set_hsv_from_camera(camera, group)
-	time.sleep(1)
+	time.sleep(600)
