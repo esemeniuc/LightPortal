@@ -34,9 +34,6 @@ import util
 
 # see http://www.zombieprototypes.com/?p=210 for plot
 def color_temp_to_rgb(kelvin: int) -> Tuple[int, int, int]:
-    if kelvin == 0:
-        return 0, 0, 0
-
     temperature = kelvin / 100.0
 
     if temperature < 66.0:

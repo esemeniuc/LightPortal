@@ -60,7 +60,7 @@ def get_lux(latitude_deg: float, longitude_deg: float, date: datetime) -> Tuple[
 # see https://docs.scipy.org/doc/scipy/reference/generated/scipy.optimize.curve_fit.html
 def colour_temp(alt_deg: float) -> int:
     if not 0 < alt_deg < 180:
-        return 0
+        return 3000
 
     if alt_deg > 90:
         alt_deg -= 90  # sunrise and sunset are mirrors of each other
@@ -71,7 +71,7 @@ def colour_temp(alt_deg: float) -> int:
         return int(50 * alt_deg + 3000)
     else:
         # quadratic function
-        return int(((5 / 18) * ((alt_deg - 90) ** 2)) + 5500)
+        return int((-5 / 18 * (alt_deg - 90) ** 2) + 5500)
 
 
 def demo():
