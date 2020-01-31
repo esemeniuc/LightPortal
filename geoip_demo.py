@@ -9,6 +9,7 @@ import timezonefinder
 from pysolar import radiation
 from pysolar.solar import get_altitude
 from pysolar.util import get_sunrise_sunset
+from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 import kelvin_rgb_conversion
 import util
@@ -96,8 +97,6 @@ def update(brightness: int, k: int) -> None:
     # group.brightness = brightness
 
     # grid stuff
-    from rgbmatrix import RGBMatrix, RGBMatrixOptions
-
     options = RGBMatrixOptions()
     options.rows = 32
     options.chain_length = 1
@@ -106,6 +105,7 @@ def update(brightness: int, k: int) -> None:
     matrix = RGBMatrix(options=options)
     r, g, b = kelvin_rgb_conversion.color_temp_to_rgb(k)
     print('rgb: ', r, g, b)
+    print('brightness: ', brightness)
     matrix.Fill(r, g, b)
     matrix.brightness = brightness
 

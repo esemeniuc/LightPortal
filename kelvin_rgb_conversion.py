@@ -53,18 +53,18 @@ def color_temp_to_rgb(kelvin: int) -> Tuple[int, int, int]:
     # Calculate green
     if temperature < 66.0:
         # a + b x + c Log[x] /.
-        # :a -> -155.25485562709179`,
+        # {a -> -155.25485562709179`,
         # b -> -0.44596950469579133`,
         # c -> 104.49216199393888`,
-        # x -> (kelvin/100) - 2
+        # x -> (kelvin/100) - 2}
         green = temperature - 2
         green = -155.25485562709179 - 0.44596950469579133 * green + 104.49216199393888 * math.log(green)
     else:
         # a + b x + c Log[x] /.
-        # :a -> 325.4494125711974`,
+        # {a -> 325.4494125711974`,
         # b -> 0.07943456536662342`,
         # c -> -28.0852963507957`,
-        # x -> (kelvin/100) - 50
+        # x -> (kelvin/100) - 50}
         green = temperature - 50.0
         green = 325.4494125711974 + 0.07943456536662342 * green - 28.0852963507957 * math.log(green)
 
@@ -75,10 +75,10 @@ def color_temp_to_rgb(kelvin: int) -> Tuple[int, int, int]:
         blue = 0
     else:
         # a + b x + c Log[x] /.
-        # :a -> -254.76935184120902`,
+        # {a -> -254.76935184120902`,
         # b -> 0.8274096064007395`,
         # c -> 115.67994401066147`,
-        # x -> kelvin/100 - 10
+        # x -> kelvin/100 - 10}
         blue = temperature - 10
         blue = -254.76935184120902 + 0.8274096064007395 * blue + 115.67994401066147 * math.log(blue)
 
