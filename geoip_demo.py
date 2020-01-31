@@ -114,8 +114,6 @@ def main():
     # date = datetime.datetime(2020, 1, 29, 12, 30, 1, 0, tzinfo=pytz.timezone('America/Los_Angeles'))
     brightness, normalized_brightness = get_lux(latitude_deg, longitude_deg, date)
     print('brightness: ', brightness, normalized_brightness)
-
-    # print('transit:', tr)
     alt = get_altitude(latitude_deg, longitude_deg, date)
     print('alt :', alt)
     k = colour_temp(alt)
