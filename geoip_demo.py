@@ -66,12 +66,12 @@ def colour_temp(alt_deg: float) -> int:
         alt_deg -= 90  # sunrise and sunset are mirrors of each other
 
     if alt_deg < 30:
-        # linear function based on
+        # linear function based on 10, 20, 30 degree angles from
         # https://micro.magnet.fsu.edu/primer/lightandcolor/colortemperatureintro.html
         return int(50 * alt_deg + 3000)
-
-    if alt_deg < 90:
-        return int(5 / 18 * (alt_deg - 90) ** 2 + 5500)
+    else:
+        # quadratic function
+        return int(((5 / 18) * ((alt_deg - 90) ** 2)) + 5500)
 
 
 def demo():
@@ -101,16 +101,17 @@ def update(brightness: int, k: int, use_matrix=True) -> None:
         group.brightness = brightness
 
 
-def main():
+def main(use_matrix=True):
     latitude_deg, longitude_deg = get_location_from_ip()
     date = get_time_with_timezone(latitude_deg, longitude_deg)
-    # date = datetime.datetime(2020, 1, 29, 12, 30, 1, 0, tzinfo=pytz.timezone('America/Los_Angeles'))
+    # date = datetime.datetime(2020, 1, 29, 14, 30, 1, 0, tzinfo=pytz.timezone('America/Los_Angeles'))
     brightness, normalized_brightness = get_lux(latitude_deg, longitude_deg, date)
     print('brightness: ', brightness, normalized_brightness)
     alt = get_altitude(latitude_deg, longitude_deg, date)
     print('alt :', alt)
     k = colour_temp(alt)
-    update(normalized_brightness, k)
+    print('color temp :', k)
+    update(normalized_brightness, k, use_matrix)
 
 
 # the variable matrix must be global, as the destructor clears the led grid
