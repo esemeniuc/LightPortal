@@ -1,4 +1,5 @@
 # pip install geoip2 pysolar pytz timezonefinder numpy
+import colorsys
 import datetime
 import urllib.request
 from typing import Tuple
@@ -6,6 +7,7 @@ from typing import Tuple
 import geoip2.database
 import pytz
 import timezonefinder
+from phue import Bridge
 from pysolar import radiation
 from pysolar.solar import get_altitude
 from pysolar.util import get_sunrise_sunset
@@ -13,9 +15,6 @@ from rgbmatrix import RGBMatrix, RGBMatrixOptions
 
 import kelvin_rgb_conversion
 import util
-
-
-# from phue import Bridge
 
 
 def get_location_from_ip() -> Tuple[float, float]:
@@ -85,35 +84,27 @@ def demo():
 
 # k: color temp (3000 to 5500k)
 # brightness: 0-255
-def update(brightness: int, k: int) -> None:
-    # philips hue stuff
-    # group = Bridge().groups[1]
-    # def from_k(k):
-    #     return (1, 1)
-    #
-    # h, s = from_k(k)
-    # group.hue = h
-    # group.saturation = s
-    # group.brightness = brightness
-
-    # grid stuff
-    options = RGBMatrixOptions()
-    options.rows = 32
-    options.chain_length = 1
-    options.parallel = 1
-    options.hardware_mapping = 'adafruit-hat'
-    matrix = RGBMatrix(options=options)
+def update(brightness: int, k: int, use_matrix=True) -> None:
     r, g, b = kelvin_rgb_conversion.color_temp_to_rgb(k)
     print('rgb: ', r, g, b)
     print('brightness: ', brightness)
-    matrix.Fill(r, g, b)
-    matrix.brightness = brightness
+
+    if use_matrix:
+        matrix.Fill(r, g, b)
+        matrix.brightness = brightness
+    else:
+        # philips hue stuff
+        group = Bridge().groups[1]
+        h, s, v = colorsys.rgb_to_hsv(r, g, b)
+        group.hue = h
+        group.saturation = s
+        group.brightness = brightness
 
 
 def main():
     latitude_deg, longitude_deg = get_location_from_ip()
-    # date = get_time_with_timezone(latitude_deg, longitude_deg)
-    date = datetime.datetime(2020, 1, 29, 12, 30, 1, 0, tzinfo=pytz.timezone('America/Los_Angeles'))
+    date = get_time_with_timezone(latitude_deg, longitude_deg)
+    # date = datetime.datetime(2020, 1, 29, 12, 30, 1, 0, tzinfo=pytz.timezone('America/Los_Angeles'))
     brightness, normalized_brightness = get_lux(latitude_deg, longitude_deg, date)
     print('brightness: ', brightness, normalized_brightness)
     alt = get_altitude(latitude_deg, longitude_deg, date)
@@ -122,4 +113,11 @@ def main():
     update(normalized_brightness, k)
 
 
+# the variable matrix must be global, as the destructor clears the led grid
+options = RGBMatrixOptions()
+options.rows = 32
+options.chain_length = 1
+options.parallel = 1
+options.hardware_mapping = 'adafruit-hat'
+matrix = RGBMatrix(options=options)
 main()
