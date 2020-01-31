@@ -44,6 +44,7 @@ def get_lux(latitude_deg: float, longitude_deg: float, date: datetime) -> Tuple[
     print('sunset: ', ss)
     daylight_span = ss - sr
     midday = sr + daylight_span / 2
+    print('midday: ', midday)
     max_lux = radiation.get_radiation_direct(date, get_altitude(latitude_deg, longitude_deg, midday))
     print('max_lux: ', max_lux)
     normalized = (raw_lux / max_lux) * 255  # put in 0 - 255 range
@@ -111,8 +112,8 @@ def update(brightness: int, k: int) -> None:
 
 def main():
     latitude_deg, longitude_deg = get_location_from_ip()
-    date = get_time_with_timezone(latitude_deg, longitude_deg)
-    # date = datetime.datetime(2020, 1, 29, 12, 30, 1, 0, tzinfo=pytz.timezone('America/Los_Angeles'))
+    # date = get_time_with_timezone(latitude_deg, longitude_deg)
+    date = datetime.datetime(2020, 1, 29, 12, 30, 1, 0, tzinfo=pytz.timezone('America/Los_Angeles'))
     brightness, normalized_brightness = get_lux(latitude_deg, longitude_deg, date)
     print('brightness: ', brightness, normalized_brightness)
     alt = get_altitude(latitude_deg, longitude_deg, date)
