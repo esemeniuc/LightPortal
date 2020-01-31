@@ -1,8 +1,6 @@
 import math
 from typing import Tuple
 
-import numpy as np
-
 #  Neil Bartlett
 #  neilbartlett.com
 #  2015-01-22
@@ -24,6 +22,7 @@ import numpy as np
 # Accuracy is best between 1000K and 40000K.
 #
 # See http://github.com/neilbartlett/color-temperature for further details.
+import util
 
 '''
  A more accurate version algorithm based on a different curve fit to the
@@ -83,4 +82,4 @@ def color_temp_to_rgb(kelvin: int) -> Tuple[int, int, int]:
         blue = temperature - 10
         blue = -254.76935184120902 + 0.8274096064007395 * blue + 115.67994401066147 * math.log(blue)
 
-    return np.round(np.clip(red, 0, 255)), np.round(np.clip(blue, 0, 255)), np.round(np.clip(green, 0, 255))
+    return util.clamp(red, 0, 255), util.clamp(blue, 0, 255), util.clamp(green, 0, 255)

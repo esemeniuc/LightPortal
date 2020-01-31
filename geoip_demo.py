@@ -4,7 +4,6 @@ import urllib.request
 from typing import Tuple
 
 import geoip2.database
-import numpy as np
 import pytz
 import timezonefinder
 from pysolar import radiation
@@ -12,6 +11,7 @@ from pysolar.solar import get_altitude
 from pysolar.util import get_sunrise_sunset
 
 import kelvin_rgb_conversion
+import util
 
 
 # from phue import Bridge
@@ -46,8 +46,8 @@ def get_lux(latitude_deg: float, longitude_deg: float, date: datetime) -> Tuple[
     midday = sr + daylight_span / 2
     max_lux = radiation.get_radiation_direct(date, get_altitude(latitude_deg, longitude_deg, midday))
     print('max_lux: ', max_lux)
-    normalized = (raw_lux / max_lux) * 255  # put in 0 - 255
-    return raw_lux, np.round(np.clip(normalized, 0, 255))
+    normalized = (raw_lux / max_lux) * 255  # put in 0 - 255 range
+    return raw_lux, util.clamp(normalized, 0, 255)
 
 
 # x: sun altitude, from 0 deg to 180 deg
@@ -103,9 +103,10 @@ def update(brightness: int, k: int) -> None:
     options.parallel = 1
     options.hardware_mapping = 'adafruit-hat'
     matrix = RGBMatrix(options=options)
-    matrix.brightness = brightness
     r, g, b = kelvin_rgb_conversion.color_temp_to_rgb(k)
+    print('rgb: ', r, g, b)
     matrix.Fill(r, g, b)
+    matrix.brightness = brightness
 
 
 def main():
@@ -118,5 +119,6 @@ def main():
     print('alt :', alt)
     k = colour_temp(alt)
     update(normalized_brightness, k)
+
 
 main()
